@@ -26,22 +26,24 @@ const Navbaer = () => {
   console.log.apply(description);
   console.log.apply(priority);
 
-  const[showPerPage,setShowaPerPage]=useState(10);
-  const[pagination,setPagination]=useState({
+  const [showPerPage, setShowaPerPage] = useState(10);
+  const [pagination, setPagination] = useState({
     start: 0,
-    end:showPerPage,
+    end: showPerPage,
   });
+
+  const [search, setSearch] = useState('')
 
   useEffect(() => {
     initialize();
-  },[showPerPage]);
+  }, [showPerPage]);
 
   const initialize = () => {
     axios
       .get("https://jsonplaceholder.typicode.com/posts")
       .then((res) => {
         console.log(res.data);
-        const tasks=res.data;
+        const tasks = res.data;
         setList(tasks);
       })
       .catch((err) => console.log(err));
@@ -50,15 +52,15 @@ const Navbaer = () => {
   const createTask = (e) => {
     e.preventDefault();
     const task = {
-      
+
       title: title,
       body: description,
     };
 
     axios
-      .post("https://jsonplaceholder.typicode.com/posts",task)
+      .post("https://jsonplaceholder.typicode.com/posts", task)
       .then((res) => {
-        console.log('post data',res.data);
+        console.log('post data', res.data);
         //const tasks=res.data;
         //setList(tasks);
       })
@@ -114,13 +116,18 @@ const Navbaer = () => {
 
   // Pagination code
 
-  const paginationHandler=(start,end)=>{
+  const paginationHandler = (start, end) => {
     setPagination({
-      start:start,
-      end:end,
+      start: start,
+      end: end,
     })
   }
-  
+
+  const handleChange = (e) => {
+    e.preventDefault()
+    setSearch(e.target.value)
+  }
+
 
   return (
     <div>
@@ -148,12 +155,16 @@ const Navbaer = () => {
             </Nav>
             <Form inline>
               <FormControl
-                type="text"
+                type="search"
+                name="search"
                 placeholder="Search"
+                onChange={(e) => handleChange(e)}
                 className="mr-sm-2"
               />
-              <Button variant="outline-success">Search</Button>
+              {/* <Button variant="outline-success">Search</Button> */}
             </Form>
+
+
           </Navbar.Collapse>
         </Navbar>
 
@@ -227,11 +238,22 @@ const Navbaer = () => {
             </tr>
           </thead>
           <tbody>
-            {list.slice(pagination.start,pagination.end).map((data, id) => (
+            {list.filter(data => {
+              if (search.length > 0) {
+                return (
+
+                  data.title.toLowerCase().includes(search.toLowerCase())
+
+                )
+              }
+              else {
+                return data
+              }
+            }).slice(pagination.start, pagination.end).map((data, id) => (
               <tr key={id}>
                 <td>{data.id}</td>
                 <td>{data.title}</td>
-                <td>{}</td>
+                <td>{ }</td>
                 <td>{data.priority}</td>
                 <td>
                   <i
@@ -254,17 +276,17 @@ const Navbaer = () => {
               </tr>
             ))}
           </tbody>
-          
+
         </Table>
         <div className='mt-4 mb-4 pb-4'>
-        <Pagination 
-          showPerPage={showPerPage}  
-          paginationHandler={paginationHandler}
-          total={list.length}
+          <Pagination
+            showPerPage={showPerPage}
+            paginationHandler={paginationHandler}
+            total={list.length}
           />
         </div>
       </Container>
-      
+
     </div>
   );
 };

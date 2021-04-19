@@ -38,30 +38,30 @@ const Pagination = (props) => {
       <nav aria-label="Page navigation example">
         <ul className="pagination">
           <li className="page-item">
-            <a
+            <div
               className="page-link pointer"
               onClick={() => buttonHandler("prev")}
             >
               Previous
-            </a>
+            </div>
           </li>
 
           {new Array(numberOfButton).fill("").map((item, index) => (
             <li className={`page-item ${index+1===counter?"active":null}`}>
-              <a 
+              <div 
                 className="page-link pointer"
                 onClick={()=>setCounter(index+1)}
               
-              >{index+1}</a>
+              >{index+1}</div>
             </li>
           ))}
           <li className="page-item">
-            <a
+            <div
               className="page-link pointer"
               onClick={() => buttonHandler("next")}
             >
               Next
-            </a>
+            </div>
           </li>
         </ul>
       </nav>
